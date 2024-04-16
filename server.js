@@ -1,5 +1,6 @@
 const { Client } = require("pg");
 const express = require("express");
+const cors = require('cors');
 require("dotenv").config();
 
 const app = express();
@@ -8,6 +9,7 @@ app.use(express.static("public"));
 
 app.use(express.urlencoded({ extended: true })); // tolka http post
 app.use(express.json()); // tolka jsondata
+app.use(cors()); // hantera cors för alla rutter
 
 const client = new Client({ // åtkomst för anslut
     host: process.env.DB_HOST,
