@@ -2,10 +2,7 @@ const { Client } = require("pg");
 const express = require("express");
 const cors = require('cors');
 require("dotenv").config();
-
 const app = express();
-app.set("view engine", "ejs");
-app.use(express.static("public"));
 
 app.use(express.urlencoded({ extended: true })); // tolka http post
 app.use(express.json()); // tolka jsondata
@@ -28,6 +25,12 @@ client.connect((err) => { // anslutning
     } else {
         console.log("Connected to database");
     }
+});
+
+/* ROUTES */
+
+app.get("/api", (req, res) => {
+    res.json( {message: "JEJA API"} );
 });
 
 app.listen(process.env.PORT, () => { // starta server
