@@ -20,7 +20,9 @@ client.connect((err) => { // anslutning
     }
 });
 
-client.query(`
+// skapa och ersätt tabell
+client.query(` 
+    DROP TABLE IF EXISTS cv;
     CREATE TABLE cv(
     id SERIAL PRIMARY KEY,
     companyname VARCHAR(255) NOT NULL,
@@ -28,7 +30,7 @@ client.query(`
     location VARCHAR(255) NOT NULL,
     decription TEXT,
     startdate DATE,
-    enddate DATE)`, (err, results) => {
+    enddate DATE)`, (err, results) => { // vid error
         if (err) {
             console.log("Error: Could not create table " + err);
             return;
