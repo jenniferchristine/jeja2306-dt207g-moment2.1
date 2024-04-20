@@ -44,7 +44,7 @@ app.get("/cv/workexperience", async (req, res) => {
             res.status(500).json({ error: "Failed to select " + err });
             return;
         }
-        if (results.rows.length === 0) {
+        if (results.length === 0) {
             res.status(200).json({ message: "No results found" });
         } else {
             res.status(200).json(results);
