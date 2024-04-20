@@ -32,12 +32,12 @@ client.connect((err) => { // anslutning
 });
 
 
-// hämta api för cv
+// hämta api 
 app.get("/cv", (req, res) => {
     res.json({ message: "API for job experiences" })
 });
 
-// se cv:ets innehåll
+// hämta innehåll
 app.get("/cv/workexperience", async (req, res) => {
     client.query(`SELECT * FROM workexperience;`, (err, results) => {
         if (err) {
@@ -50,6 +50,28 @@ app.get("/cv/workexperience", async (req, res) => {
             res.status(200).json(results.rows);
         }
     })
+});
+
+// hämta specifierat innehåll
+app.get("/cv/workexperience/:id", async (req, res) => {
+    const id = req.params.id;
+
+    const selectExperience = { // sql-förfrågan med angivet id
+        text: 'SELECT * FROM workexperience WHERE id = $1',
+        values: [id],
+    };
+
+    const result = await client.query(selectExperience, (err, results) => { // utför förfrågan
+        if (err) {
+            res.status(500).json({error: "Failed to select " + err});
+            return;
+        }
+        if (results.rows.length === 0) {
+            res.status(200).json({message: "No results found"});
+        } else {
+            res.status(200).json(results.rows[0]); // returnera endast första resultatet, om de finns
+        }
+    });
 });
 
 app.post("/cv/workexperience", async (req, res) => {
