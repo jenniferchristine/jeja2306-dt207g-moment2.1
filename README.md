@@ -12,7 +12,7 @@
 >### Laboration i moment 2.1:
 >Denna uppgift är den första delen av Moment 2 - Introduktion till webbtjänster. Detta är en REST-webbtjänst byggt med Express som hanterar arbetserfarenheter. Tjänsten innehar akronymen CRUD (Create Read Update Delete) för att hantera data och låter resurser begäras från annan ursprung. 
 >
->APIet använder en PostgreSQL-databas och kan användas genom att köra kommando npm install för installation av nödvändiga npm-paket. Vidare behöver man köra installationsskriptet för att skapa databastabellerna nedan. En liveversion av webbtjänsten finns tillgänglig här: [Länk till API](https://jeja2306-dt207g-moment2-1.onrender.com/)
+>APIet använder en PostgreSQL-databas och kan användas genom att köra kommando npm install för installation av nödvändiga npm-paket. Vidare behöver man köra installationsskriptet för att skapa databastabellerna nedan. En liveversion av webbtjänsten finns tillgänglig här: [Länk till API](https://jeja2306-dt207g-moment2-1.onrender.com/cv)
 
 <br>
 
