@@ -22,15 +22,13 @@ client.connect((err) => { // anslutning
 
 // skapa och ersätt tabell
 client.query(` 
-    DROP TABLE IF EXISTS cv;
-    CREATE TABLE cv(
+    DROP TABLE IF EXISTS workexperience;
+    CREATE TABLE workexperience(
     id SERIAL PRIMARY KEY NOT NULL,
     companyname VARCHAR(255) NOT NULL,
     jobtitle VARCHAR(255) NOT NULL,
     location VARCHAR(255) NOT NULL,
-    description TEXT,
-    startdate DATE,
-    enddate DATE)`, (err, results) => { // vid error
+    description TEXT)`, (err, results) => { // vid error
         if (err) {
             console.log("Error: Could not create table " + err);
             return;
@@ -40,15 +38,15 @@ client.query(`
 
 // lägg till data
 client.query(`
-INSERT INTO cv(companyname, jobtitle, location, description, startdate, enddate)
+INSERT INTO workexperience(companyname, jobtitle, location, description)
 VALUES 
-('SEB', 'Bolånehandläggare', 'Sundsvall', 'Förhandlat bolåneräntor och uppläggning av lån', '2021-10-15', '2023-12-31'),
-('Videoteket', 'Marknadsförare', 'Sundsvall', 'Skötte all digital och fysisk marknadsföring, grafiskt material och reklam', '2018-06-01', '2019-12-01'),
-('Frilansare', 'Logodesigner', 'Sundsvall', 'Designat personliga logotyper', '2017-01-01', '2022-01-01')
+('SEB', 'Bolånehandläggare', 'Sundsvall', 'Förhandlat bolåneräntor och uppläggning av lån'),
+('Videoteket', 'Marknadsförare', 'Sundsvall', 'Skötte all digital och fysisk marknadsföring, grafiskt material och reklam'),
+('Frilansare', 'Logodesigner', 'Sundsvall', 'Designat personliga logotyper')
 `, 
 (err, results) => {
 if (err) {
-    console.error('Error inserting data into cv table: ', err);
+    console.error('Error inserting data into table: ', err);
     return;
 }
 console.log('Data inserted successfully ' + results);

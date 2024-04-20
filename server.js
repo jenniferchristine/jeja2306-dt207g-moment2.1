@@ -2,7 +2,9 @@ const { Client } = require("pg");
 const express = require("express");
 const cors = require('cors');
 require("dotenv").config();
+
 const app = express();
+const port = process.env.PORT || 3000;
 
 /* MIDDLEWARES */
 
@@ -16,7 +18,7 @@ const client = new Client({ // åtkomst för anslut
     user: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
-    ssl: { 
+    ssl: {
         rejectUnauthorized: false, // ej tillgång till krypt info
     },
 });
@@ -29,23 +31,97 @@ client.connect((err) => { // anslutning
     }
 });
 
-/* HÄMTA CV */
 
+// hämta api för cv
 app.get("/cv", (req, res) => {
-    client.query(`SELECT * FROM cv;`, (err, results) => {
+    res.json({ message: "API for job experiences" })
+});
+
+// se cv:ets innehåll
+app.get("/cv/workexperience", async (req, res) => {
+    client.query(`SELECT * FROM workexperience;`, (err, results) => {
         if (err) {
-            res.status(500).json({error: "Failed to select " + err}); // serverfel 500
+            res.status(500).json({ error: "Failed to select " + err }); // Konvertera felmeddelandet till en JSON-sträng
             return;
         }
-        if (results.length === 0) {
-            res.status(200).json({message: "No results found"});
+        if (results.rows.length === 0) {
+            res.status(200).json({ message: "No results found" });
         } else {
-            res.status(200).json(results);
+            res.status(200).json(results.rows);
         }
     })
 });
 
+app.post("/cv/workexperience", async (req, res) => {
+    let companyname = req.body.companyname;
+    let jobtitle = req.body.jobtitle;
+    let location = req.body.location;
+    let description = req.body.description;
 
-app.listen(process.env.PORT, () => { // starta server
-    console.log("Server started on port: " + process.env.PORT);
+    let errors = { // felhantering
+        message: "",
+        detail: "",
+        https_response: {
+
+        }
+    };
+
+    if (!companyname || !jobtitle || !location || !description) {
+
+        // error-meddelanden
+        errors.message = "You must add where you have been employed, by whom, as what and add a description of the work";
+        errors.detail = "All information needs to be added in JSON";
+
+        // svarsmeddelanden
+        errors.https_response.message = "Bad request";
+        errors.https_response.code = 400;
+
+        res.status(400).json(errors);
+        return;
+    }
+
+    // addera jobberfarenhet
+    const result = await client.query(`INSERT INTO workexperience(companyname, jobtitle, location, description) VALUES ($1, $2, $3, $4);`,
+        [companyname, jobtitle, location, description], (err, results) => {
+            if (err) {
+                res.status(500).json({ error: "Failed to select " + err }); // serverfel 500
+                return;
+            }
+            console.log("Fråga skapad: " + results);
+        });
+
+    let workexperience = {
+        companyname: companyname,
+        jobtitle: jobtitle,
+        location: location,
+        description: description
+    };
+
+    res.json({ message: "Workexperience added", workexperience });
+});
+
+// uppdatera
+app.put("/cv/workexperience/:id", async (req, res) => {
+    const id = req.params.id; // id från url
+    const updated = req.body; // hämta uppdaterad
+
+    try { 
+        const result = await client.query(`UPDATE workexperience SET companyname = $1, jobtitle = $2, location = $3, description = $4 WHERE id = $5`,
+            [updated.companyname, updated.jobtitle, updated.location, updated.description, id] // funktion för att kommunicera med databas och query för förfrågan
+        );
+        res.json({ message: "Workexperience updated: " + req.params.id });
+    } catch (err) {
+        console.log("Error while updating workexperience: " + err);
+        res.status(500).json({ error: "An error occurred while updating workexperience" });
+    }
+});
+
+// radera
+app.delete("/cv/workexperience/:id", (req, res) => {
+    res.json({ message: "Workexperience deleted: " + req.params.id });
+});
+
+// starta server
+app.listen(port, () => {
+    console.log("Server started on port: " + port);
 });
