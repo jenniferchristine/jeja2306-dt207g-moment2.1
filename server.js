@@ -47,7 +47,7 @@ app.get("/cv/workexperience", async (req, res) => {
         if (results.rows.length === 0) {
             res.status(200).json({ message: "No results found" });
         } else {
-            res.status(200).json(results.rows);
+            res.status(200).json(results);
         }
     })
 });
