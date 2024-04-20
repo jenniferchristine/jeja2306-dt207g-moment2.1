@@ -41,7 +41,7 @@ app.get("/cv", (req, res) => {
 app.get("/cv/workexperience", async (req, res) => {
     client.query(`SELECT * FROM workexperience;`, (err, results) => {
         if (err) {
-            res.status(500).json({ error: "Failed to select " + err }); // Konvertera felmeddelandet till en JSON-sträng
+            res.status(500).json({ error: "Failed to select " + err });
             return;
         }
         if (results.rows.length === 0) {
@@ -118,8 +118,22 @@ app.put("/cv/workexperience/:id", async (req, res) => {
 
 // radera
 app.delete("/cv/workexperience/:id", (req, res) => {
-    res.json({ message: "Workexperience deleted: " + req.params.id });
-});
+    const id = req.params.id;
+    
+    const deleteExperience = { // sql-förfrågan för att radera med angivet id
+      text: 'DELETE FROM workexperience WHERE id = $1',
+      values: [id],
+    };
+  
+    client.query(deleteExperience, (err, results) => {
+      if (err) {
+        console.error('Error when deleting', err);
+        res.status(500).json({ message: 'Error deleting work experience' + err});
+      } else {
+        res.json({ message: 'Work experience deleted successfully: ' + id });
+      }
+    });
+  });
 
 // starta server
 app.listen(port, () => {
