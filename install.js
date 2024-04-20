@@ -24,11 +24,11 @@ client.connect((err) => { // anslutning
 client.query(` 
     DROP TABLE IF EXISTS cv;
     CREATE TABLE cv(
-    id SERIAL PRIMARY KEY,
+    id SERIAL PRIMARY KEY NOT NULL,
     companyname VARCHAR(255) NOT NULL,
     jobtitle VARCHAR(255) NOT NULL,
     location VARCHAR(255) NOT NULL,
-    decription TEXT,
+    description TEXT,
     startdate DATE,
     enddate DATE)`, (err, results) => { // vid error
         if (err) {
@@ -37,3 +37,19 @@ client.query(`
         }
         console.log("Table created " + results);
     });
+
+// lägg till data
+client.query(`
+INSERT INTO cv(companyname, jobtitle, location, description, startdate, enddate)
+VALUES 
+('SEB', 'Bolånehandläggare', 'Sundsvall', 'Förhandlat bolåneräntor och uppläggning av lån', '2021-10-15', '2023-12-31'),
+('Videoteket', 'Marknadsförare', 'Sundsvall', 'Skötte all digital och fysisk marknadsföring, grafiskt material och reklam', '2018-06-01', '2019-12-01'),
+('Frilansare', 'Logodesigner', 'Sundsvall', 'Designat personliga logotyper', '2017-01-01', '2022-01-01')
+`, 
+(err, results) => {
+if (err) {
+    console.error('Error inserting data into cv table: ', err);
+    return;
+}
+console.log('Data inserted successfully ' + results);
+});

@@ -4,6 +4,8 @@ const cors = require('cors');
 require("dotenv").config();
 const app = express();
 
+/* MIDDLEWARES */
+
 app.use(express.urlencoded({ extended: true })); // tolka http post
 app.use(express.json()); // tolka jsondata
 app.use(cors()); // hantera cors för alla rutter
@@ -27,11 +29,22 @@ client.connect((err) => { // anslutning
     }
 });
 
-/* ROUTES */
+/* HÄMTA CV */
 
-app.get("/api", (req, res) => {
-    res.json( {message: "JEJA API"} );
+app.get("/cv", (req, res) => {
+    client.query(`SELECT * FROM cv;`, (err, results) => {
+        if (err) {
+            res.status(500).json({error: "Failed to select " + err}); // serverfel 500
+            return;
+        }
+        if (results.length === 0) {
+            res.status(200).json({message: "No results found"});
+        } else {
+            res.status(200).json(results);
+        }
+    })
 });
+
 
 app.listen(process.env.PORT, () => { // starta server
     console.log("Server started on port: " + process.env.PORT);
