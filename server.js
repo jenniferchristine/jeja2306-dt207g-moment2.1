@@ -39,7 +39,7 @@ app.get("/cv", (req, res) => {
 
 // hämta innehåll
 app.get("/cv/workexperience", async (req, res) => {
-    client.query(`SELECT * FROM workexperience;`, (err, results) => {
+    client.query(`SELECT * FROM workexperience ORDER BY id DESC;`, (err, results) => {
         if (err) {
             res.status(500).json({ error: "Failed to select " + err });
             return;
